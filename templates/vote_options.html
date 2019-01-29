@@ -1,0 +1,47 @@
+<div class="columns">
+{% for result in result_list %}
+    <div class="column">
+        <div class="tile is-parent">
+            <article class="tile is-child box button is-outlined is-large is-info" id="food_{{result[0]}}" onclick="vote('{{result[0]}}')">
+                <span class="icon">
+                    <i class="fas fa-utensils"></i>
+                </span>
+                <span>{{result[1]}} |{{result[2]}}</span>
+            </article>
+        </div>
+        <p class="has-text-centered is-hidden" id="selected-{{result[0]}}">You voted {{result[1]}}!</p>
+    </div>
+{% endfor %}
+</div>
+
+
+<script>
+    window.onload = function() {
+
+        // Search for next friday date
+        let weekDayToFind = moment().day('Friday').weekday(); //change to searched day name
+
+        let searchDate = moment(); //now or change to any date
+        while (searchDate.weekday() !== weekDayToFind){
+            searchDate.add(1, 'day');
+        }
+        // Start countdown
+        dany_countdown_start(searchDate.format("MM-DD-YYYY"));
+    };
+
+    function vote(food_id) {
+        $.ajax({
+            url: "/vote_food",
+            type: 'POST',
+            dataType: "json",
+            data: {
+                'food_id': food_id
+            },
+            success: function(result){
+                $("#food_" + food_id).removeClass('is-info').removeClass('is-outlined').addClass('is-success');
+                $("#selected-" + food_id).removeClass('is-hidden');
+            }
+        });
+    }
+
+</script>

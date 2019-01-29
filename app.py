@@ -1,17 +1,6 @@
-import sqlite3
-from flask import Flask, render_template, request, jsonify
-from flask import g
-
-DATABASE = 'database.sqlite3'
-
+from flask import Flask, render_template, request, jsonify, render_template_string
+from database_tools import get_db
 app = Flask(__name__)
-
-
-def get_db():
-    db = getattr(g, '_database', None)
-    if db is None:
-        db = g._database = sqlite3.connect(DATABASE)
-    return db
 
 
 @app.route('/')
@@ -35,8 +24,25 @@ def create_poll():
     query = "INSERT INTO food (name, date) VALUES ('%s', CURRENT_DATE), ('%s', CURRENT_DATE), ('%s', CURRENT_DATE), ('%s', CURRENT_DATE);" % (opcion1, opcion2, opcion3, opcion4)
     cur.execute(query)
     db.commit()
+    result_query = "SELECT id, name, votes FROM food WHERE date=CURRENT_DATE ORDER BY name"
+    cur.execute(result_query)
+    insert_result_list = cur.fetchall()
     cur.close()
-    return jsonify(dict(options=[opcion1, opcion2, opcion3, opcion4]))
+    context = {
+        'result_list': insert_result_list
+    }
+
+    result = {
+        'html': render_template('vote_options.html', **context),
+    }
+
+    return jsonify(result)
+
+
+@app.route('/vote_food', methods=['POST'])
+def vote_food():
+    # TODO - Food ID comes by parameter. must increment food vote integer by one.
+    return jsonify("Piola")
 
 
 if __name__ == '__main__':

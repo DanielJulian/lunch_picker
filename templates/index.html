@@ -3,6 +3,7 @@
     <head>
         <meta charset="utf-8">
         <title>Tradehelm Lunch</title>
+        <link rel="shortcut icon" href="/static/img/tradehelm.ico" type="image/x-icon" />
         <!-- Jquery-->
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
         <!-- FontAwesome-->
@@ -114,61 +115,18 @@
             </div>
         </section>
         <section class="is-info is-medium is-bold box" style="margin: 1em; display: none;" id="poll_section">
-            <div class="columns">
-                <div class="column">
-                    <div class="tile is-parent">
-                        <article class="tile is-child box button is-outlined is-large" onclick="">
-                            <span class="icon">
-                                <i class="fa fa-times"></i>
-                            </span>
-                            <span class="title" id="numCurrentTasks">15</span>
-                            <span class="subtitle">Milanesas con pure</span>
-                        </article>
-                    </div>
-                </div>
-                <div class="column">
-                    <div class="tile is-parent">
-                        <article class="tile is-child box button is-outlined is-large" onclick="">
-                            <span class="icon">
-                                <i class="fa fa-tasks"></i>
-                            </span>
-                            <span class="title" id="numCurrentTasks">2</span>
-                            <span class="subtitle">Pizza</span>
-                        </article>
-                    </div>
-                </div>
-                <div class="column">
-                    <div class="tile is-parent">
-                        <article class="tile is-child box button is-outlined is-large" onclick="">
-                            <span class="icon">
-                                <i class="fa fa-times"></i>
-                            </span>
-                            <span class="title" id="numCurrentTasks">6</span>
-                            <span class="subtitle">Hamburguesas</span>
-                        </article>
-                    </div>
-                </div>
-                <div class="column">
-                    <div class="tile is-parent">
-                        <article class="tile is-child box button is-outlined is-large" onclick="">
-                            <span class="icon">
-                                <i class="fa fa-check"></i>
-                            </span>
-                            <span class="title" id="numCurrentTasks">8</span>
-                            <span class="subtitle">Tacos</span>
-                        </article>
-                    </div>
-                </div>
+            <div id="vote_options">
+
             </div>
             <div class="columns">
                 <div class="column">
                     <div class="container">
                         <h1 id="head">Time left to vote</h1>
                         <ul>
-                            <li><span id="days"></span>days</li>
-                            <li><span id="hours"></span>Hours</li>
-                            <li><span id="minutes"></span>Minutes</li>
-                            <li><span id="seconds"></span>Seconds</li>
+                            <li class="li-countdown"><span id="days" class="span-countdown"></span>days</li>
+                            <li class="li-countdown"><span id="hours" class="span-countdown"></span>Hours</li>
+                            <li class="li-countdown"><span id="minutes" class="span-countdown"></span>Minutes</li>
+                            <li class="li-countdown"><span id="seconds" class="span-countdown"></span>Seconds</li>
                         </ul>
                     </div>
                 </div>
@@ -204,24 +162,12 @@
                 'option4': $("#option4").val()
             },
             success: function(result){
-                console.log(result['options']);
                 $("#food_choices").slideUp("slow");
+                $("#vote_options").append(result['html']);
                 $("#poll_section").slideDown("slow");
             }
         });
 
     }
 
-    window.onload = function() {
-
-        // Search for next friday date
-        let weekDayToFind = moment().day('Friday').weekday(); //change to searched day name
-
-        let searchDate = moment(); //now or change to any date
-        while (searchDate.weekday() !== weekDayToFind){
-            searchDate.add(1, 'day');
-        }
-        // Start countdown
-        dany_countdown_start(searchDate.format("MM-DD-YYYY"));
-    };
 </script>
