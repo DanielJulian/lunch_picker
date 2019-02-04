@@ -1,11 +1,50 @@
-from flask import Flask, render_template, request, jsonify, render_template_string
+from flask import Flask, render_template, request, jsonify, redirect, abort, Response
+from flask_login import LoginManager, login_user, login_required, logout_user
 from database_tools import get_db
+from user import User, validate_user
+
 app = Flask(__name__)
+app.config['SECRET_KEY'] = b'_5#y6L"F8Q8z\n\xec]/'
+
+login_manager = LoginManager()
+login_manager.login_view = "login"
+login_manager.init_app(app)
+
+
+@login_manager.user_loader
+def load_user(user):
+    print(user)
+    return User(user[0])
+
+
+# somewhere to login
+@app.route("/login", methods=["GET", "POST"])
+def login():
+    if request.method == 'POST':
+        username = request.form['username']
+        password = request.form['password']
+        id = validate_user(username, password)
+        if id:
+            user = User(id)
+            login_user(user)
+            return render_template('index.html')
+        else:
+            return "WRONG CREDENTIALS MAI FREND"
+    else:
+        return render_template('login.html')
+
+
+@app.route("/logout")
+@login_required
+def logout():
+    logout_user()
+    return render_template('login.html')
 
 
 @app.route('/')
-def index(name=None):
-    return render_template('index.html', name=name)
+@login_required
+def index():
+    return render_template('index.html')
 
 
 @app.route('/create_poll', methods=['POST'])
